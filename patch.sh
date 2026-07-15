@@ -113,7 +113,15 @@ EOF
             --notes-file release_notes.md
 
         rm -f release_notes.md
-        gh variable set PATCH_VERSION --body "$LATEST_PATCH_VERSION"
+        
+        echo "$LATEST_PATCH_VERSION" > patch-version.txt
+        
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+
+        git add patch-version.txt
+        git commit -m "Update patch version to $LATEST_PATCH_VERSION" || true
+        git push
     fi
 
     echo "========================================"
