@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# GitHub Actions repository variable:
-# env:
-#   CURRENT_PATCH_VERSION: ${{ vars.PATCH_VERSION }}
-
-CURRENT_PATCH_VERSION="${CURRENT_PATCH_VERSION:-0.0.0}"
+if [[ -f patch-version.txt ]]; then
+    CURRENT_PATCH_VERSION=$(<patch-version.txt)
+else
+    CURRENT_PATCH_VERSION="0.0.0"
+fi
 
 CLI_RELEASE_URL="https://api.github.com/repos/MorpheApp/morphe-desktop/releases/latest"
 BUNDLE_JSON_URL="https://raw.githubusercontent.com/MorpheApp/morphe-patches/main/patches-bundle.json"
@@ -115,13 +115,15 @@ EOF
         rm -f release_notes.md
         
         echo "$LATEST_PATCH_VERSION" > patch-version.txt
-        
-        git config user.name github-actions
-        git config user.email github-actions@github.com
 
-        git add patch-version.txt
-        git commit -m "Update patch version to $LATEST_PATCH_VERSION" || true
-        git push
+        if ! git diff --quiet patch-version.txt; then
+            git config user.name "github-actions"
+            git config user.email "github-actions@github.com"
+
+            git add patch-version.txt
+            git commit -m "Update patch version to $LATEST_PATCH_VERSION"
+            git push
+        fi
     fi
 
     echo "========================================"
