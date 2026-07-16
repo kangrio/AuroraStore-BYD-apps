@@ -77,6 +77,7 @@ if [ -z "$CURRENT_PATCH_VERSION" ] || \
             -p patch/patches.mpp \
             -d "GmsCore support" \
             -d "Custom branding" \
+            --keystore="Morphe.keystore" \
             -o "out/$output" \
             "$apk"
 
