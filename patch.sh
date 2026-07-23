@@ -25,6 +25,7 @@ PATCH_URL=$(echo "$BUNDLE_JSON" | jq -r '.download_url')
 
 echo "Current patch version: $CURRENT_PATCH_VERSION"
 echo "Latest  patch version: $LATEST_PATCH_VERSION"
+echo "$LATEST_PATCH_VERSION" > patch-version.txt
 
 version_gt() {
     [ "$(printf '%s\n%s\n' "$2" "$1" | sort -V | tail -n1)" = "$1" ] &&
@@ -74,6 +75,7 @@ if [ -z "$CURRENT_PATCH_VERSION" ] || \
 
         java -jar patch/morphe-cli.jar patch \
             -p microg-patches.mpp \
+            -e "MicroG Support" \
             -p patch/patches.mpp \
             -d "GmsCore support" \
             -d "Custom branding" \
