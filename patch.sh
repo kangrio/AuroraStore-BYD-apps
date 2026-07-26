@@ -12,7 +12,7 @@ BUNDLE_JSON_URL="https://raw.githubusercontent.com/MorpheApp/morphe-patches/main
 
 mkdir -p patch
 mkdir -p out
-trap 'rm -rf patch' EXIT
+trap 'rm -rf patch apps out' EXIT
 
 echo "Fetching latest Morphe CLI..."
 CLI_URL=$(curl -fsSL "$CLI_RELEASE_URL" | jq -r '.assets[0].browser_download_url')
@@ -43,19 +43,10 @@ if [ -z "$CURRENT_PATCH_VERSION" ] || \
     echo "Downloading patches..."
     curl -fsSL "$PATCH_URL" -o patch/patches.mpp
 
+    chmod +x downloads.sh
+   ./downloads.sh || { echo "Failed to download APKs. Exiting."; exit 1; }
+
     shopt -s nullglob
-
-    # Merge split APKs (.apk.001, .apk.002, ...)
-    for first in apps/*.apk.001; do
-        [ -e "$first" ] || continue
-
-        base="${first%.001}"
-        echo "Merging $(basename "$base")..."
-
-        rm -f "$base"
-
-        cat "${base}".* > "$base"
-    done
 
     # Collect all APKs
     apks=(apps/*.apk)
