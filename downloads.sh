@@ -35,3 +35,4 @@ for app_info in "${apps[@]}"; do
     --fallbackarch arm64-v8a \
     -o apps/${name}_${latest_version}.apk 2>&1 | grep -qi "error:" && { echo "Failed to download $org/$app ($latest_version)."; exit 1; } 
 done
+exit 0
