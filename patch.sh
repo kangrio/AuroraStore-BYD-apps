@@ -8,7 +8,7 @@ else
 fi
 
 CLI_RELEASE_URL="https://api.github.com/repos/MorpheApp/morphe-desktop/releases/latest"
-BUNDLE_JSON_URL="https://raw.githubusercontent.com/MorpheApp/morphe-patches/main/patches-bundle.json"
+BUNDLE_RELEASE_URL="https://api.github.com/repos/MorpheApp/morphe-patches/releases/latest"
 
 mkdir -p patch
 mkdir -p out
@@ -18,10 +18,10 @@ echo "Fetching latest Morphe CLI..."
 CLI_URL=$(curl -fsSL "$CLI_RELEASE_URL" | jq -r '.assets[0].browser_download_url')
 
 echo "Fetching patch metadata..."
-BUNDLE_JSON=$(curl -fsSL "$BUNDLE_JSON_URL")
+BUNDLE_RELEASE_JSON=$(curl -fsSL "$BUNDLE_RELEASE_URL")
 
-LATEST_PATCH_VERSION=$(echo "$BUNDLE_JSON" | jq -r '.version')
-PATCH_URL=$(echo "$BUNDLE_JSON" | jq -r '.download_url')
+LATEST_PATCH_VERSION=$(echo "$BUNDLE_RELEASE_JSON" | jq -r '.tag_name' | sed 's/^v//')
+PATCH_URL="https://github.com/MorpheApp/morphe-patches/releases/download/v${LATEST_PATCH_VERSION}/patches-${LATEST_PATCH_VERSION}.mpp"
 
 echo "Current patch version: $CURRENT_PATCH_VERSION"
 echo "Latest  patch version: $LATEST_PATCH_VERSION"
