@@ -42,7 +42,6 @@ class SpoofAppComponentFactory: AppComponentFactory() {
         className: String,
         intent: Intent?
     ): Activity {
-        VersionChecker.init()
         return checkCompatWrapper(super.instantiateActivity(cl, className, intent))
     }
 
