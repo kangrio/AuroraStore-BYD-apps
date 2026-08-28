@@ -37,7 +37,7 @@ val spoofSignature = resourcePatch(
             val file = File("patch-version.txt")
             if (file.exists()) {
                 val version = file.readText().trim()
-                val patchVersion = version.replace(Regex("[^0-9]"), "").toInt()
+                patchVersion = version.replace(Regex("[^0-9]"), "").toInt()
             }
         }catch (e: Throwable) {
             e.printStackTrace()
