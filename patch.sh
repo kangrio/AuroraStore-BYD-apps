@@ -45,6 +45,9 @@ if [ -z "$CURRENT_PATCH_VERSION" ] || \
     chmod +x downloads.sh
    ./downloads.sh || { echo "Failed to download APKs. Exiting."; exit 1; }
 
+    chmod +x build-patches.sh
+   ./build-patches.sh || { echo "Failed to build MicroG patches."; exit 1; }
+
     shopt -s nullglob
 
     # Collect all APKs
@@ -66,7 +69,7 @@ if [ -z "$CURRENT_PATCH_VERSION" ] || \
         output="${apk_name}-morphe-${LATEST_PATCH_VERSION}.apk"
 
         java -jar patch/morphe-cli.jar patch \
-            -p microg-patches.mpp \
+            -p patch/microg-patches.mpp \
             -e "MicroG Support" \
             -p patch/patches.mpp \
             -d "GmsCore support" \
