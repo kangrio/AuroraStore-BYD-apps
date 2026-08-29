@@ -23,16 +23,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq curl
+
+      - name: Check patch version
+        run: |
+          CURRENT=$(cat patch-version.txt)
+          LATEST=$(curl -fsSL https://api.github.com/repos/MorpheApp/morphe-patches/releases/latest | jq -r '.tag_name' | sed 's/^v//')
+      
+          echo "Current: $CURRENT"
+          echo "Latest:  $LATEST"
+      
+          [ "$CURRENT" != "$LATEST" ] || exit 0
+
       - name: Set up Java 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "21"
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq curl
 
       - name: Build patched APKs
         run: |
