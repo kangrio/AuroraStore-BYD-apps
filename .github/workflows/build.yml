@@ -29,22 +29,29 @@ jobs:
           sudo apt-get install -y jq curl
 
       - name: Check patch version
+        id: patch
         run: |
           CURRENT=$(cat patch-version.txt)
           LATEST=$(curl -fsSL https://api.github.com/repos/MorpheApp/morphe-patches/releases/latest | jq -r '.tag_name' | sed 's/^v//')
       
           echo "Current: $CURRENT"
           echo "Latest:  $LATEST"
-      
-          [ "$CURRENT" != "$LATEST" ] || exit 0
+
+          if [ "$CURRENT" = "$LATEST" ]; then
+            echo "up_to_date=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "up_to_date=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Set up Java 21
+        if: steps.patch.outputs.up_to_date == 'false'
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "21"
 
       - name: Build patched APKs
+        if: steps.patch.outputs.up_to_date == 'false'
         run: |
           chmod +x patch.sh
           ./patch.sh
