@@ -107,7 +107,7 @@ EOF
 
         gh release create "$TAG" \
             out/* \
-            patch/patches.mpp \
+            patch/microg-patches.mpp \
             --title "$TITLE" \
             --notes-file release_notes.md
 
